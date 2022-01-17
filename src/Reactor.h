@@ -47,6 +47,15 @@ namespace reactor {
             Reactor(int p_reactorId, reactor::EventService* p_eventService);
 
             /**
+             * @brief Construct a new Reactor object
+             * 
+             * @param p_reactorId The reactor's id or way to identify themselves
+             * @param p_socketAddr The socket's custom address
+             * @param p_eventService The already constructed event service
+             */
+            Reactor(int p_reactorId, std::string p_socketAddr, reactor::EventService* p_eventService);
+
+            /**
              * @brief Destroy the Reactor object
              * 
              * Since this is an abstract class the destructor does not call thread.join()
