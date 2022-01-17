@@ -11,9 +11,11 @@ MKDIR	:= mkdir
 LS		:= ls
 CP		:= cp
 CD		:= cd
+PWD		:= pwd
 
 # Top Level Variables
-PRJ_DIR		:= /home/kyle/projects/libreactor
+CUR_DIR		:= $(shell $(PWD))
+PRJ_DIR		?= $(CUR_DIR)
 BLD_DIR		:= $(PRJ_DIR)/build_dir
 SRC			:= $(PRJ_DIR)/src
 PRJ_NAME	?= reactor
