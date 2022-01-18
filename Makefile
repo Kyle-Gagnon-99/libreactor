@@ -34,7 +34,7 @@ LIBS		+= spdlog
 LIBS		+= pthread
 
 # Defines
-DEFINES 	+= DEBUG_OUTPUT
+#DEFINES 	+= DEBUG_OUTPUT
 
 # Where to install the library to. Can be overriden
 INSTALL_SO_DIR	?= /usr/local/lib
