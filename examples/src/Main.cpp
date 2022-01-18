@@ -16,7 +16,6 @@ int main() {
     FullReactor secondFullReactor(10, &evService);
     secondFullReactor.start();
 
-
     fullReactor.sendMessage(5, "This is rid 5 sending to rid 5!");
     fullReactor.sendMessage(10, "This is rid 5 sending to rid 10!");
     secondFullReactor.sendMessage(5, "This is rid 10 sending to rid 5!");

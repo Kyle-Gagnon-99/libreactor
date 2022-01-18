@@ -24,9 +24,9 @@ class FullReactor : public reactor::Reactor {
          */
         ~FullReactor();
         /**
-         * @brief The message to consume
+         * @brief Consumes the message and prints the message out
          * 
-         * @param p_msg 
+         * @param p_msg The message to consume
          */
         void consumeMsg(std::string p_msg);
 
