@@ -18,7 +18,6 @@ CUR_DIR		:= $(shell $(PWD))
 PRJ_DIR		?= $(CUR_DIR)
 BLD_DIR		:= $(PRJ_DIR)/build_dir
 SRC			:= $(PRJ_DIR)/src
-PRJ_NAME	?= reactor
 
 # This is empty because we can add actual defines in the Makefile
 DEFINES 	+=

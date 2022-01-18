@@ -3,6 +3,7 @@
 #include <iterator>
 #include <map>
 #include <vector>
+#include <string>
 #include "spdlog/spdlog.h"
 #include "EventService.h"
 #include "event_message_types.h"
@@ -23,6 +24,21 @@ namespace reactor {
         isReady = true;
         
         
+    }
+
+    EventService::EventService(std::string p_socketAddr) {
+
+        // Setup a router socket
+        socketType = zmq::socket_type::router;
+        routerSocket = new zmq::socket_t(context, socketType);
+
+        do
+        {
+            routerSocket->bind(p_socketAddr);
+        } while (!(routerSocket->connected()));
+
+        isReady = true;
+
     }
 
     void EventService::run(void) {
@@ -121,8 +137,11 @@ namespace reactor {
 
     void EventService::passMessage(zmq::message_t* p_destMsg, zmq::message_t* p_message) {
 
+        zmq::message_t cpyMsg (p_message->size());
+        cpyMsg.copy(*(p_message));
+
         routerSocket->send(*(p_destMsg), zmq::send_flags::sndmore);
-        routerSocket->send(*(p_message), zmq::send_flags::none);
+        routerSocket->send(cpyMsg, zmq::send_flags::none);
 
     }
 

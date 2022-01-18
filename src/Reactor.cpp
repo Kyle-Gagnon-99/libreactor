@@ -23,6 +23,25 @@ namespace reactor {
 
     }
 
+    Reactor::Reactor(int p_rid, std::string p_socketAddr, reactor::EventService* p_evService) : rid(p_rid), evServicePtr(p_evService) {
+
+        /**
+         * @brief Constructor to include a custom address for the socket
+         * 
+         */
+        #ifdef DEBUG_OUTPUT
+        spdlog::debug("Starting Reactor constructor with RID of {}", rid);
+        #endif
+
+        socketType = zmq::socket_type::dealer;
+        dealerSocket = new zmq::socket_t(context, socketType);
+        dealerSocket->setsockopt(ZMQ_ROUTING_ID, (void *)&rid, sizeof(rid));
+
+        dealerSocket->connect(p_socketAddr);
+        sendStartupMessage();
+
+    }
+
     void Reactor::run() {
 
         zmq::message_t msg;
@@ -47,7 +66,7 @@ namespace reactor {
                 sendMessage(&destMsg, &msg);
 
             } else {
-                consumeMsg(msg.data());
+                consumeMsg(msg.to_string());
             }
         }
     }
