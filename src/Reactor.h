@@ -132,7 +132,7 @@ namespace reactor {
              * Defines on how the current reactor will consume the messages coming in. This is
              * where the real power comes from.
              */
-            virtual void consumeMsg(void *) = 0;
+            virtual void consumeMsg(std::string) = 0;
 
     };
 }

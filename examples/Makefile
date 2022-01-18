@@ -1,10 +1,11 @@
 include make_rules/config.mk
 
 # Output of the program
-OUTPUT		:= App.exe
+OUTPUT		:= Examples.exe
 
 # All CPP files to compile
 CPP_SRC += $(SRC)/Main.cpp
+CPP_SRC += $(SRC)/FullReactor.cpp
 
 # Compile OBJ files (.o) to a build directory
 CPP_OBJ		:= $(addprefix $(BLD_DIR), $(subst $(PRJ_DIR), ,$(CPP_SRC:.cpp=.o)))

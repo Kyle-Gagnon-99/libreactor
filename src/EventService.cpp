@@ -137,8 +137,11 @@ namespace reactor {
 
     void EventService::passMessage(zmq::message_t* p_destMsg, zmq::message_t* p_message) {
 
+        zmq::message_t cpyMsg (p_message->size());
+        cpyMsg.copy(*(p_message));
+
         routerSocket->send(*(p_destMsg), zmq::send_flags::sndmore);
-        routerSocket->send(*(p_message), zmq::send_flags::none);
+        routerSocket->send(cpyMsg, zmq::send_flags::none);
 
     }
 

@@ -33,3 +33,6 @@
 
 # Ignore vscode
 .vscode/
+
+# ZMQ Specific
+*.ipc

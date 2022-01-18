@@ -66,7 +66,7 @@ namespace reactor {
                 sendMessage(&destMsg, &msg);
 
             } else {
-                consumeMsg(msg.data());
+                consumeMsg(msg.to_string());
             }
         }
     }
