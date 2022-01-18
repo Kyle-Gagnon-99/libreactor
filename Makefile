@@ -65,8 +65,7 @@ $(CPP_H): pre-install
 # Target for anything that should be done before the library actuall installs
 .PHONY: pre-install
 pre-install:
-	@$(ECHO) Install libreactor
-	@$(ECHO) NOTE: You need to run this as sudo
+	@$(ECHO) Installing libreactor
 	$(VERBOSE)$(MKDIR) -p $(INSTALL_SO_DIR)
 	$(VERBOSE)$(MKDIR) -p $(INSTALL_H_DIR)/$(PRJ_NAME)/
 
