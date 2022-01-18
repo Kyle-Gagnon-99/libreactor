@@ -5,6 +5,7 @@
 #include <zmq.hpp>
 #include <vector>
 #include <thread>
+#include <string>
 
 namespace reactor {
     /**
@@ -38,6 +39,12 @@ namespace reactor {
              * Starts the event service object by binding to the address.
              */
             EventService();
+            /**
+             * @brief Construct a new Event Service object
+             * 
+             * @param p_socketAddr The custom address for the socket
+             */
+            EventService(std::string p_socketAddr);
             /**
              * @brief Destroy the Event Service object
              * 

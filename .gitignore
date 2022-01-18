@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+# Ignore vscode
+.vscode/
+
+# ZMQ Specific
+*.ipc
