@@ -91,10 +91,12 @@ namespace reactor {
              */
             void passMessage(zmq::message_t* p_destination, zmq::message_t* p_message);
             /**
-             * @brief Send a fail message back to the router
+             * @brief Sends a message back to the router stating a failure in sending
              * 
+             * @param p_sourceMsg The source of where it came from
+             * @param p_destMsg The destination of where it was sending to
              */
-            void sendFailMsg(zmq::message_t* p_sourceMsg);
+            void sendFailMsg(zmq::message_t* p_sourceMsg, zmq::message_t* p_destMsg);
     };
 }
 

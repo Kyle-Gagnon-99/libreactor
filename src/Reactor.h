@@ -54,7 +54,7 @@ namespace reactor {
              * Since this is an abstract class the destructor does not call thread.join()
              * here. It is highly advised that the derived class does.
              */
-            ~Reactor();
+            virtual ~Reactor();
 
             /**
              * @brief Send a message to a reactor
@@ -95,7 +95,7 @@ namespace reactor {
              * 
              */
             zmq::socket_t* dealerSocket;
-            
+
 
             /**
              * @brief Send a message using purley zmq::message_t*
@@ -119,6 +119,12 @@ namespace reactor {
              * where the real power comes from.
              */
             virtual void consumeMsg(std::string) = 0;
+
+            /**
+             * @brief Process the fail message. Up to the user on what to do with the message
+             * 
+             */
+            virtual void processFailMsg(std::string, int) = 0;
 
     };
 }

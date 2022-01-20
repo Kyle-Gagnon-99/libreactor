@@ -43,6 +43,7 @@ namespace reactor {
     void Reactor::run() {
 
         zmq::message_t msg;
+        zmq::message_t destMsg;
         zmq::recv_result_t recv;
 
         while(1) {
@@ -51,8 +52,14 @@ namespace reactor {
             if(msg.empty()) {
                 continue;
             }
-            
-            consumeMsg(msg.to_string());
+
+            if(msg.to_string() == reactor::type::FAIL_TO_DELIVER) {
+                recv = dealerSocket->recv(destMsg, zmq::recv_flags::none);
+                int dest = *(static_cast<int *>(destMsg.data()));
+                processFailMsg(msg.to_string(), dest);
+            } else {
+                consumeMsg(msg.to_string());
+            } 
         }
     }
 
@@ -78,6 +85,6 @@ namespace reactor {
     }
 
     Reactor::~Reactor() {
-
+        
     }
 }

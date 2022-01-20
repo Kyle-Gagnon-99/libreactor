@@ -15,6 +15,7 @@ namespace reactor {
         // Setup a router socket
         socketType = zmq::socket_type::router;
         routerSocket = new zmq::socket_t(context, socketType);
+        routerSocket->setsockopt(ZMQ_ROUTER_MANDATORY, 1);
 
         do
         {
@@ -31,6 +32,7 @@ namespace reactor {
         // Setup a router socket
         socketType = zmq::socket_type::router;
         routerSocket = new zmq::socket_t(context, socketType);
+        routerSocket->setsockopt(ZMQ_ROUTER_MANDATORY, 1);
 
         do
         {
@@ -79,14 +81,11 @@ namespace reactor {
                 continue;
             }
 
-            int sourceId = *(static_cast<int *>(sourceMsg.data()));
-
             #ifdef DEBUG_ROUTER_RECV
             spdlog::debug("Source As To Int: {}", sourceId);
             #endif
 
             recv = routerSocket->recv(destMsg, zmq::recv_flags::none);
-            int destId = *(static_cast<int *>(destMsg.data()));
 
             #ifdef DEBUG_ROUTER_RECV
             spdlog::debug("Destination or ID: {}", destId);
@@ -98,7 +97,16 @@ namespace reactor {
             spdlog::debug("Message: {}", msg.str());
             #endif
 
-            passMessage(&destMsg, &msg);
+            try {
+                passMessage(&destMsg, &msg);
+            } catch(const zmq::error_t error) {
+                #ifdef ENABLE_ROUTER_ERROR
+                int source = *(static_cast<int *>(sourceMsg.data()));
+                int destination = *(static_cast<int *>(destMsg.data()));
+                spdlog::error("ZMQ ERROR: {} :: Source {} :: Destination {}", error.what(), source, destination);
+                #endif
+                sendFailMsg(&sourceMsg, &destMsg);
+            }
         }
 
         routerSocket->close();
@@ -122,12 +130,13 @@ namespace reactor {
 
     }
 
-    void EventService::sendFailMsg(zmq::message_t* p_sourceMsg) {
+    void EventService::sendFailMsg(zmq::message_t* p_sourceMsg, zmq::message_t* p_destMsg) {
         
         zmq::message_t failMsg (reactor::type::FAIL_TO_DELIVER);
 
         routerSocket->send(*p_sourceMsg, zmq::send_flags::sndmore);
-        routerSocket->send(failMsg, zmq::send_flags::none);
+        routerSocket->send(failMsg, zmq::send_flags::sndmore);
+        routerSocket->send(*p_destMsg, zmq::send_flags::none);
 
     }
 }
