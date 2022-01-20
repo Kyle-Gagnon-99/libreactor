@@ -34,6 +34,7 @@ LIBS		+= reactor
 all: $(OUTPUT)
 
 $(OUTPUT): $(CPP_OBJ)
+	$(VERBOSE)$(MAKE) -C ../ full-installation
 	@$(ECHO)
 	@$(ECHO) Compiling all object files...
 	@$(ECHO) Linking....

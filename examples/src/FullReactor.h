@@ -17,7 +17,7 @@ class FullReactor : public reactor::Reactor {
          * @param p_evService Fully constructed event service
          * 
          */
-        FullReactor(int p_rid, reactor::EventService* p_evService);
+        FullReactor(int p_rid);
         /**
          * @brief Destroy the Full Reactor object
          * 

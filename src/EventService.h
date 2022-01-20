@@ -76,11 +76,6 @@ namespace reactor {
              * 
              */
             std::thread thread_object;
-            /**
-             * @brief A list of reactors that are currently up
-             * 
-             */
-            std::vector<int> aliveReactors;
 
             /**
              * @brief How the actual thread runs
@@ -96,20 +91,10 @@ namespace reactor {
              */
             void passMessage(zmq::message_t* p_destination, zmq::message_t* p_message);
             /**
-             * @brief Sends a fail to deliver message back to the reactor it came from.
+             * @brief Send a fail message back to the router
              * 
-             * @param p_sourceMsg The zmq message of where it came from
-             * @param p_destMsg The zmq message of where it will go
-             * @param p_message The zmq message that is the actual message
              */
-            void sendFailMsg(zmq::message_t* p_sourceMsg, zmq::message_t* p_destMsg, zmq::message_t* p_message);
-            /**
-             * @brief Checks if the given reactor is up
-             * 
-             * @return true If the given reactor is alive
-             * @return false If the given reactor is not alive
-             */
-            bool reactorIsUp(int);
+            void sendFailMsg(zmq::message_t* p_sourceMsg);
     };
 }
 

@@ -32,28 +32,21 @@ namespace reactor {
              * be available to others to know how to pass messages to it.
              */
             int rid;
-            /**
-             * @brief A pointer to the event service object.
-             * 
-             */
-            reactor::EventService* evServicePtr;
 
             /**
              * @brief Construct a new Reactor object.
              * 
              * @param p_reactorId The reactor's id or way to identify themselves
-             * @param p_eventService The already constructed event service
              */
-            Reactor(int p_reactorId, reactor::EventService* p_eventService);
+            Reactor(int p_reactorId);
 
             /**
              * @brief Construct a new Reactor object
              * 
              * @param p_reactorId The reactor's id or way to identify themselves
              * @param p_socketAddr The socket's custom address
-             * @param p_eventService The already constructed event service
              */
-            Reactor(int p_reactorId, std::string p_socketAddr, reactor::EventService* p_eventService);
+            Reactor(int p_reactorId, std::string p_socketAddr);
 
             /**
              * @brief Destroy the Reactor object
@@ -103,13 +96,6 @@ namespace reactor {
              */
             zmq::socket_t* dealerSocket;
             
-            /**
-             * @brief Sends a startup message to the event service to let the event service
-             * know that the reactor is up for the message to be guarenteed to be sent to
-             * it.
-             * 
-             */
-            void sendStartupMessage();
 
             /**
              * @brief Send a message using purley zmq::message_t*

@@ -10,10 +10,10 @@ int main() {
     reactor::EventService evService;
     evService.start();
 
-    FullReactor fullReactor(5, &evService);
+    FullReactor fullReactor(5);
     fullReactor.start();
 
-    FullReactor secondFullReactor(10, &evService);
+    FullReactor secondFullReactor(10);
     secondFullReactor.start();
 
     fullReactor.sendMessage(5, "This is rid 5 sending to rid 5!");

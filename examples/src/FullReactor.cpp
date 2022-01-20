@@ -4,7 +4,7 @@
 #include "reactor/EventService.h"
 #include "FullReactor.h"
 
-FullReactor::FullReactor(int p_rid, reactor::EventService* p_evService) : reactor::Reactor(p_rid, p_evService) {
+FullReactor::FullReactor(int p_rid) : reactor::Reactor(p_rid) {
     
 }
 
