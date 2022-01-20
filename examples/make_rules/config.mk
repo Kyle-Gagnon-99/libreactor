@@ -12,6 +12,7 @@ LS		:= ls
 CP		:= cp
 CD		:= cd
 PWD		:= pwd
+MAKE	:= make
 
 # Top Level Variables
 CUR_DIR		:= $(shell $(PWD))

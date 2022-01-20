@@ -15,6 +15,7 @@ namespace reactor {
         // Setup a router socket
         socketType = zmq::socket_type::router;
         routerSocket = new zmq::socket_t(context, socketType);
+        routerSocket->setsockopt(ZMQ_ROUTER_MANDATORY, 1);
 
         do
         {
@@ -31,6 +32,7 @@ namespace reactor {
         // Setup a router socket
         socketType = zmq::socket_type::router;
         routerSocket = new zmq::socket_t(context, socketType);
+        routerSocket->setsockopt(ZMQ_ROUTER_MANDATORY, 1);
 
         do
         {
@@ -46,17 +48,7 @@ namespace reactor {
         zmq::recv_result_t recv;
 
         /**
-         * @brief Receive messages and then decide what to do with it
-         * 
-         * Wait for the first message to arrive. This should be the source
-         * message that a dealer socket sends. After we need to receive
-         * where it's going and the message to send. We don't care about
-         * the contents of the message but we care where it came from
-         * and where it's going.
-         * 
-         * If the message we received was a STARTUP message then that
-         * means we need to add the RID to the map for future use. Otherwise
-         * attempt to send the message.
+         * @brief Receive messages and then pass them
          */
         while(1) {
             // Where it came from (the dealer who sent it, it's id)
@@ -89,14 +81,11 @@ namespace reactor {
                 continue;
             }
 
-            int sourceId = *(static_cast<int *>(sourceMsg.data()));
-
             #ifdef DEBUG_ROUTER_RECV
             spdlog::debug("Source As To Int: {}", sourceId);
             #endif
 
             recv = routerSocket->recv(destMsg, zmq::recv_flags::none);
-            int destId = *(static_cast<int *>(destMsg.data()));
 
             #ifdef DEBUG_ROUTER_RECV
             spdlog::debug("Destination or ID: {}", destId);
@@ -108,21 +97,17 @@ namespace reactor {
             spdlog::debug("Message: {}", msg.str());
             #endif
 
-            // If the person who is sending this is new then add it to the list
-            if(!(reactorIsUp(sourceId)) && msg.to_string() == reactor::type::STARTUP) {
-                aliveReactors.push_back(sourceId);
-            } else if (!(reactorIsUp(sourceId)) && msg.to_string() != reactor::type::STARTUP) {
-                spdlog::error("ERROR: Unkown reactor ({}) attempted to communicate without a startup message! Aborting!", sourceId);
-            } else {
-                if(reactorIsUp(destId)) {
-                    passMessage(&destMsg, &msg);
-                } else {
-                    sendFailMsg(&sourceMsg, &destMsg, &msg);
-                }
+            try {
+                passMessage(&destMsg, &msg);
+            } catch(const zmq::error_t error) {
+                #ifdef ENABLE_ROUTER_ERROR
+                int source = *(static_cast<int *>(sourceMsg.data()));
+                int destination = *(static_cast<int *>(destMsg.data()));
+                spdlog::error("ZMQ ERROR: {} :: Source {} :: Destination {}", error.what(), source, destination);
+                #endif
+                sendFailMsg(&sourceMsg, &destMsg);
             }
         }
-
-
 
         routerSocket->close();
     }
@@ -145,31 +130,13 @@ namespace reactor {
 
     }
 
-    void EventService::sendFailMsg(zmq::message_t* p_sourceMsg, zmq::message_t* p_destMsg, zmq::message_t* p_message) {
+    void EventService::sendFailMsg(zmq::message_t* p_sourceMsg, zmq::message_t* p_destMsg) {
+        
+        zmq::message_t failMsg (reactor::type::FAIL_TO_DELIVER);
 
-        std::string failToDeliverStr = reactor::type::FAIL_TO_DELIVER;
-        zmq::message_t failToDeliver (failToDeliverStr);
-
-        routerSocket->send(*(p_sourceMsg), zmq::send_flags::sndmore);
-        routerSocket->send(failToDeliver, zmq::send_flags::sndmore);
-        routerSocket->send(*(p_destMsg), zmq::send_flags::sndmore);
-        routerSocket->send(*(p_message), zmq::send_flags::none);
-
-    }
-
-    bool EventService::reactorIsUp(int p_reactorId) {
-
-        std::vector<int>::iterator it;
-        bool returnValue = false;
-
-        for(it = aliveReactors.begin(); it != aliveReactors.end(); ++it) {
-            if(*it == p_reactorId) {
-                returnValue = true;
-                break;
-            }
-        }
-
-        return returnValue;
+        routerSocket->send(*p_sourceMsg, zmq::send_flags::sndmore);
+        routerSocket->send(failMsg, zmq::send_flags::sndmore);
+        routerSocket->send(*p_destMsg, zmq::send_flags::none);
 
     }
 }

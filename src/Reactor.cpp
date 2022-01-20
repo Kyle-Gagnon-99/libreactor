@@ -5,7 +5,7 @@
 #include "event_message_types.h"
 
 namespace reactor {
-    Reactor::Reactor(int p_rid, reactor::EventService* p_evService) : rid(p_rid), evServicePtr(p_evService) {
+    Reactor::Reactor(int p_rid) : rid(p_rid) {
 
         /*
         * Default Constructor
@@ -19,11 +19,10 @@ namespace reactor {
         dealerSocket->setsockopt(ZMQ_ROUTING_ID, (void *)&rid, sizeof(rid));
 
         dealerSocket->connect("ipc://eventServiceIpc.ipc");
-        sendStartupMessage();
 
     }
 
-    Reactor::Reactor(int p_rid, std::string p_socketAddr, reactor::EventService* p_evService) : rid(p_rid), evServicePtr(p_evService) {
+    Reactor::Reactor(int p_rid, std::string p_socketAddr) : rid(p_rid) {
 
         /**
          * @brief Constructor to include a custom address for the socket
@@ -38,13 +37,13 @@ namespace reactor {
         dealerSocket->setsockopt(ZMQ_ROUTING_ID, (void *)&rid, sizeof(rid));
 
         dealerSocket->connect(p_socketAddr);
-        sendStartupMessage();
 
     }
 
     void Reactor::run() {
 
         zmq::message_t msg;
+        zmq::message_t destMsg;
         zmq::recv_result_t recv;
 
         while(1) {
@@ -54,47 +53,23 @@ namespace reactor {
                 continue;
             }
 
-            // The message failed to deliver
             if(msg.to_string() == reactor::type::FAIL_TO_DELIVER) {
-
-                zmq::message_t destMsg;
-                zmq::message_t msg;
-
                 recv = dealerSocket->recv(destMsg, zmq::recv_flags::none);
-                recv = dealerSocket->recv(msg, zmq::recv_flags::none);
-
-                sendMessage(&destMsg, &msg);
-
+                int dest = *(static_cast<int *>(destMsg.data()));
+                processFailMsg(msg.to_string(), dest);
             } else {
                 consumeMsg(msg.to_string());
-            }
+            } 
         }
-    }
-
-    void Reactor::sendStartupMessage() {
-
-        std::string ignoreMsgStr = reactor::type::IGNORE_MSG;
-        std::string startupMsStr = reactor::type::STARTUP;
-
-        zmq::message_t ignoreMsg (ignoreMsgStr);
-        dealerSocket->send(ignoreMsg, zmq::send_flags::sndmore);
-
-        zmq::message_t thirdMsg (startupMsStr);
-        dealerSocket->send(thirdMsg, zmq::send_flags::none);
-
     }
 
     void Reactor::sendMessage(int p_destRid, std::string p_evBase) {
 
-        if(!evServicePtr->isReady) {
-            spdlog::error("Can't send message! Event service is not up!");
-        } else {
-            zmq::message_t destRid ((void *)&p_destRid, sizeof(p_destRid));
-            dealerSocket->send(destRid, zmq::send_flags::sndmore);
+        zmq::message_t destRid ((void *)&p_destRid, sizeof(p_destRid));
+        dealerSocket->send(destRid, zmq::send_flags::sndmore);
 
-            zmq::message_t eventMsg (p_evBase);
-            dealerSocket->send(eventMsg, zmq::send_flags::none);
-        }
+        zmq::message_t eventMsg (p_evBase);
+        dealerSocket->send(eventMsg, zmq::send_flags::none);
 
     }
 
@@ -110,6 +85,6 @@ namespace reactor {
     }
 
     Reactor::~Reactor() {
-
+        
     }
 }

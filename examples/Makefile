@@ -31,9 +31,15 @@ LIBS		+= reactor
 # Custom defines
 #DEFINES		+= DEBUG_ROUTER_RECV
 
+# Whether or not to include a full installation of libreactor
+INCLUDE_FULL_INSTALLATION	?= n
+
 all: $(OUTPUT)
 
 $(OUTPUT): $(CPP_OBJ)
+ifeq ($(INCLUDE_FULL_INSTALLATION),y)
+	$(VERBOSE)$(MAKE) -C ../ full-installation
+endif
 	@$(ECHO)
 	@$(ECHO) Compiling all object files...
 	@$(ECHO) Linking....

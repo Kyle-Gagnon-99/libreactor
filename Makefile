@@ -35,6 +35,7 @@ LIBS		+= pthread
 
 # Defines
 #DEFINES 	+= DEBUG_OUTPUT
+DEFINES		+= ENABLE_ROUTER_ERROR
 
 # Where to install the library to. Can be overriden
 INSTALL_SO_DIR	?= /usr/local/lib
