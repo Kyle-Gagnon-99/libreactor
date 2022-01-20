@@ -36,7 +36,7 @@ namespace reactor {
 
         do
         {
-            routerSocket->bind(p_socketAddr);
+            routerSocket->bind(p_socketAddr.data());
         } while (!(routerSocket->connected()));
 
         isReady = true;

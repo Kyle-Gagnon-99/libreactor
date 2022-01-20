@@ -36,7 +36,11 @@ namespace reactor {
         dealerSocket = new zmq::socket_t(context, socketType);
         dealerSocket->setsockopt(ZMQ_ROUTING_ID, (void *)&rid, sizeof(rid));
 
-        dealerSocket->connect(p_socketAddr);
+        try {
+            dealerSocket->connect(p_socketAddr);
+        } catch(const zmq::error_t error) {
+            spdlog::error("{}", error.what());
+        }
 
     }
 
