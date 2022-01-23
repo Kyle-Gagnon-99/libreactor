@@ -18,7 +18,7 @@ namespace reactor {
         dealerSocket = new zmq::socket_t(context, socketType);
         dealerSocket->setsockopt(ZMQ_ROUTING_ID, (void *)&rid, sizeof(rid));
 
-        dealerSocket->connect("ipc://eventServiceIpc.ipc");
+        dealerSocket->connect(socketAddress);
 
     }
 
@@ -50,7 +50,7 @@ namespace reactor {
         zmq::message_t destMsg;
         zmq::recv_result_t recv;
 
-        while(1) {
+        while(isRunning) {
             // Get the actual message
             recv = dealerSocket->recv(msg, zmq::recv_flags::dontwait);
             if(msg.empty()) {
@@ -77,11 +77,9 @@ namespace reactor {
 
     }
 
-    void Reactor::sendMessage(zmq::message_t* p_destMsg, zmq::message_t* p_msg) {
-        
-        dealerSocket->send(*(p_destMsg), zmq::send_flags::sndmore);
-        dealerSocket->send(*(p_msg), zmq::send_flags::none);
-
+    void Reactor::stopThread() {
+        isRunning = false;
+        dealerSocket->close();
     }
 
     void Reactor::start() {
