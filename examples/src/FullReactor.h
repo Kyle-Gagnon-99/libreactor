@@ -22,6 +22,7 @@ class FullReactor : public reactor::Reactor {
          * @brief Destroy the Full Reactor object
          * 
          */
+        FullReactor(int p_rid, std::string p_conEndPoint);
         virtual ~FullReactor();
         /**
          * @brief Consumes the message and prints the message out

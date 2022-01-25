@@ -1,7 +1,10 @@
 #include <thread>
+#include <sstream>
+#include <iomanip>
 #include "spdlog/spdlog.h"
 #include "zmq.hpp"
 #include "Reactor.h"
+#include "ReactorId.h"
 #include "event_message_types.h"
 
 namespace reactor {
@@ -14,11 +17,34 @@ namespace reactor {
         spdlog::debug("Starting Reactor constructor with RID of {}", rid);
         #endif
 
+        /**
+         * Start of creating a ReactorId object
+         * 
+         * The ReactorId object is used to help support the ability
+         * to talk from C++ to other language bindings. This uses
+         * Google's Protobuf to create a way to set a id of the
+         * socket and can move it around.
+         */
+        reactor::ReactorId reactorIdStruct;
+        reactorIdStruct.set_rid(rid);
+        std::size_t structSize = reactorIdStruct.ByteSizeLong();
+
+        char* reactorIdArray = new char[structSize];
+        reactorIdStruct.SerializeToArray((void *)reactorIdArray, structSize);
+        /*
+         * End of creating a ReactorId object
+         */
+
         socketType = zmq::socket_type::dealer;
         dealerSocket = new zmq::socket_t(context, socketType);
-        dealerSocket->setsockopt(ZMQ_ROUTING_ID, (void *)&rid, sizeof(rid));
 
-        dealerSocket->connect("ipc://eventServiceIpc.ipc");
+        dealerSocket->setsockopt(ZMQ_ROUTING_ID, (void *)reactorIdArray, structSize);
+        
+        try {
+            dealerSocket->connect(socketAddress);
+        } catch(const zmq::error_t error) {
+            spdlog::error("{}", error.what());
+        }
 
     }
 
@@ -32,11 +58,34 @@ namespace reactor {
         spdlog::debug("Starting Reactor constructor with RID of {}", rid);
         #endif
 
+        /**
+         * Start of creating a ReactorId object
+         * 
+         * The ReactorId object is used to help support the ability
+         * to talk from C++ to other language bindings. This uses
+         * Google's Protobuf to create a way to set a id of the
+         * socket and can move it around.
+         */
+        reactor::ReactorId reactorIdStruct;
+        reactorIdStruct.set_rid(rid);
+        std::size_t structSize = reactorIdStruct.ByteSizeLong();
+
+        char* reactorIdArray = new char[structSize];
+        reactorIdStruct.SerializeToArray((void *)reactorIdArray, structSize);
+        /*
+         * End of creating a ReactorId object
+         */
+
         socketType = zmq::socket_type::dealer;
         dealerSocket = new zmq::socket_t(context, socketType);
-        dealerSocket->setsockopt(ZMQ_ROUTING_ID, (void *)&rid, sizeof(rid));
 
-        dealerSocket->connect(p_socketAddr);
+        dealerSocket->setsockopt(ZMQ_ROUTING_ID, (void *)reactorIdArray, structSize);
+
+        try {
+            dealerSocket->connect(p_socketAddr);
+        } catch(const zmq::error_t error) {
+            spdlog::error("{}", error.what());
+        }
 
     }
 
@@ -46,7 +95,7 @@ namespace reactor {
         zmq::message_t destMsg;
         zmq::recv_result_t recv;
 
-        while(1) {
+        while(isRunning) {
             // Get the actual message
             recv = dealerSocket->recv(msg, zmq::recv_flags::dontwait);
             if(msg.empty()) {
@@ -55,29 +104,41 @@ namespace reactor {
 
             if(msg.to_string() == reactor::type::FAIL_TO_DELIVER) {
                 recv = dealerSocket->recv(destMsg, zmq::recv_flags::none);
-                int dest = *(static_cast<int *>(destMsg.data()));
-                processFailMsg(msg.to_string(), dest);
+
+                reactor::ReactorId destId;
+                std::string destMsgStr (static_cast<char *>(destMsg.data()));
+                destId.ParseFromArray(destMsg.data(), destMsgStr.length());
+
+                processFailMsg(msg.to_string(), destId.rid());
             } else {
                 consumeMsg(msg.to_string());
             } 
         }
     }
 
-    void Reactor::sendMessage(int p_destRid, std::string p_evBase) {
+    void Reactor::sendMessage(int p_destRid, std::string p_message) {
 
-        zmq::message_t destRid ((void *)&p_destRid, sizeof(p_destRid));
+        /*
+         * Convert destination rid (int) to ReactorId object
+         */
+        reactor::ReactorId destReactorId;
+        destReactorId.set_rid(p_destRid);
+        std::size_t structSize = destReactorId.ByteSizeLong();
+
+        char* destReactorIdArray = new char[structSize];
+        destReactorId.SerializeToArray((void *)destReactorIdArray, structSize);
+
+        zmq::message_t destRid ((void *)destReactorIdArray, structSize);
         dealerSocket->send(destRid, zmq::send_flags::sndmore);
 
-        zmq::message_t eventMsg (p_evBase);
-        dealerSocket->send(eventMsg, zmq::send_flags::none);
+        zmq::message_t message (p_message);
+        dealerSocket->send(message, zmq::send_flags::none);
 
     }
 
-    void Reactor::sendMessage(zmq::message_t* p_destMsg, zmq::message_t* p_msg) {
-        
-        dealerSocket->send(*(p_destMsg), zmq::send_flags::sndmore);
-        dealerSocket->send(*(p_msg), zmq::send_flags::none);
-
+    void Reactor::stopThread() {
+        isRunning = false;
+        dealerSocket->close();
     }
 
     void Reactor::start() {

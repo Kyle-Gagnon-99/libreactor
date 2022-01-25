@@ -96,14 +96,17 @@ namespace reactor {
              */
             zmq::socket_t* dealerSocket;
 
+            /**
+             * @brief Keeps the thread running
+             * 
+             */
+            bool isRunning = true;
 
             /**
-             * @brief Send a message using purley zmq::message_t*
+             * @brief The default socket address
              * 
-             * @param p_destMsg Where the message is going
-             * @param p_msg The actual message
              */
-            void sendMessage(zmq::message_t * p_destMsg, zmq::message_t * p_msg);
+            std::string socketAddress = "tcp://127.0.0.1:5555";
 
             /**
              * @brief How the actual class runs in the thread
@@ -111,6 +114,13 @@ namespace reactor {
              * This gets called by start()
              */
             void run();
+
+            /**
+             * @brief Stops the thread by stopping the run method, closes the socket
+             * and then the object will come to the end of its lifetime
+             * 
+             */
+            void stopThread();
 
             /**
              * @brief How to this reactor will consume the message

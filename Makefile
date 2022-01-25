@@ -6,6 +6,7 @@ OUTPUT		:= libreactor.so
 # All CPP files to compile
 CPP_SRC += $(SRC)/EventService.cpp
 CPP_SRC += $(SRC)/Reactor.cpp
+CPP_SRC += $(SRC)/ReactorId.cpp
 
 # Compile OBJ files (.o) to a build directory
 CPP_OBJ		:= $(addprefix $(BLD_DIR), $(subst $(PRJ_DIR), ,$(CPP_SRC:.cpp=.o)))
@@ -14,6 +15,7 @@ CPP_OBJ		:= $(addprefix $(BLD_DIR), $(subst $(PRJ_DIR), ,$(CPP_SRC:.cpp=.o)))
 CPP_H		+= $(SRC)/EventService.h
 CPP_H		+= $(SRC)/Reactor.h
 CPP_H		+= $(SRC)/event_message_types.h
+CPP_H		+= $(SRC)/ReactorId.h
 
 # Directories on where to include header files
 INC_DIR		+= $(SRC)
@@ -32,6 +34,7 @@ LIBS_DIR	+= /usr/local/lib/
 LIBS		+= zmq
 LIBS		+= spdlog
 LIBS		+= pthread
+LIBS		+= protobuf
 
 # Defines
 #DEFINES 	+= DEBUG_OUTPUT
@@ -117,5 +120,7 @@ full-installation: remove-installation clean $(OUTPUT) $(CPP_H) install-so clean
 # Include the dependencies. Since the dependency files won't exist at first the -include supresses the warnings
 -include $(DEP)
 
+# Include the google protocol buffer rules
+include make_rules/proto.mk
 	
 include make_rules/debug_rules.mk

@@ -76,6 +76,11 @@ namespace reactor {
              * 
              */
             std::thread thread_object;
+            /**
+             * @brief The default address
+             * 
+             */
+            std::string socketAddress = "tcp://127.0.0.1:5555";
 
             /**
              * @brief How the actual thread runs

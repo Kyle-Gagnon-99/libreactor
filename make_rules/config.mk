@@ -3,15 +3,18 @@
 #############################
 
 # Commands
-ECHO	:= echo
-MAKE	:= make
-CAT		:= cat
-RM		:= rm
-MKDIR	:= mkdir
-LS		:= ls
-CP		:= cp
-CD		:= cd
-PWD		:= pwd
+ECHO		:= echo
+MAKE		:= make
+CAT			:= cat
+RM			:= rm
+MKDIR		:= mkdir
+LS			:= ls
+CP			:= cp
+CD			:= cd
+PWD			:= pwd
+RENAME		:= rename
+BASENAME	:= basename
+CUT			:= cut
 
 # Top Level Variables
 CUR_DIR		:= $(shell $(PWD))

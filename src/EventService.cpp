@@ -7,6 +7,7 @@
 #include "spdlog/spdlog.h"
 #include "EventService.h"
 #include "event_message_types.h"
+#include "ReactorId.h"
 
 namespace reactor {
 
@@ -19,7 +20,7 @@ namespace reactor {
 
         do
         {
-            routerSocket->bind("ipc://eventServiceIpc.ipc");
+            routerSocket->bind(socketAddress);
         } while (!(routerSocket->connected()));
 
         isReady = true;
@@ -36,7 +37,7 @@ namespace reactor {
 
         do
         {
-            routerSocket->bind(p_socketAddr);
+            routerSocket->bind(p_socketAddr.data());
         } while (!(routerSocket->connected()));
 
         isReady = true;
@@ -81,29 +82,25 @@ namespace reactor {
                 continue;
             }
 
-            #ifdef DEBUG_ROUTER_RECV
-            spdlog::debug("Source As To Int: {}", sourceId);
-            #endif
-
             recv = routerSocket->recv(destMsg, zmq::recv_flags::none);
 
-            #ifdef DEBUG_ROUTER_RECV
-            spdlog::debug("Destination or ID: {}", destId);
-            #endif
-
             recv = routerSocket->recv(msg, zmq::recv_flags::none);
-
-            #ifdef DEBUG_ROUTER_RECV
-            spdlog::debug("Message: {}", msg.str());
-            #endif
 
             try {
                 passMessage(&destMsg, &msg);
             } catch(const zmq::error_t error) {
                 #ifdef ENABLE_ROUTER_ERROR
-                int source = *(static_cast<int *>(sourceMsg.data()));
-                int destination = *(static_cast<int *>(destMsg.data()));
-                spdlog::error("ZMQ ERROR: {} :: Source {} :: Destination {}", error.what(), source, destination);
+
+                reactor::ReactorId sourceId;
+                reactor::ReactorId destId;
+
+                std::string sourceMsgStr (static_cast<char *>(sourceMsg.data())); 
+                sourceId.ParseFromArray(sourceMsg.data(), sourceMsgStr.length());
+
+                std::string destMsgStr (static_cast<char *>(destMsg.data()));
+                destId.ParseFromArray(destMsg.data(), destMsgStr.length());
+
+                spdlog::error("ZMQ ERROR: {} :: Source {} :: Destination {}", error.what(), sourceId.rid(), destId.rid());
                 #endif
                 sendFailMsg(&sourceMsg, &destMsg);
             }

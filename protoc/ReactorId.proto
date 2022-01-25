@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package reactor;
+
+message ReactorId {
+    int64 rid = 1;
+}
