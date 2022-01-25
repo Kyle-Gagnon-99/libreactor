@@ -36,6 +36,7 @@ INCLUDE_FULL_INSTALLATION	?= n
 
 all: $(OUTPUT)
 
+.PHONY: $(OUTPUT)
 $(OUTPUT): $(CPP_OBJ)
 ifeq ($(INCLUDE_FULL_INSTALLATION),y)
 	$(VERBOSE)$(MAKE) -C ../ full-installation
