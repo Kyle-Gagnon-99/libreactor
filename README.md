@@ -5,8 +5,6 @@ CPPZMQ - https://github.com/zeromq/cppzmq (Based off of ZeroMQ)
 
 Google Protocol Buffers (protobuf/protoc) - https://github.com/protocolbuffers/protobuf
 
-https://github.com/zeromq/cppzmq
-
 # Installation
 Installing the library normal requires sudo unless you would like to install the .so and header files to a different location. First
 
