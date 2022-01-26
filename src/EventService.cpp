@@ -1,9 +1,10 @@
 #include <thread>
-#include <zmq.hpp>
 #include <iterator>
 #include <map>
 #include <vector>
 #include <string>
+
+#include "zmq.hpp"
 #include "spdlog/spdlog.h"
 #include "EventService.h"
 #include "event_message_types.h"
@@ -14,33 +15,16 @@ namespace reactor {
     EventService::EventService() {
 
         // Setup a router socket
-        socketType = zmq::socket_type::router;
-        routerSocket = new zmq::socket_t(context, socketType);
+        routerSocket = new zmq::socket_t(context, routerSocketType);
         routerSocket->setsockopt(ZMQ_ROUTER_MANDATORY, 1);
-
-        do
-        {
-            routerSocket->bind(socketAddress);
-        } while (!(routerSocket->connected()));
-
-        isReady = true;
-        
-        
+               
     }
 
-    EventService::EventService(std::string p_socketAddr) {
+    EventService::EventService(std::string p_socketAddress) : socketAddress(p_socketAddress) {
 
         // Setup a router socket
-        socketType = zmq::socket_type::router;
-        routerSocket = new zmq::socket_t(context, socketType);
+        routerSocket = new zmq::socket_t(context, routerSocketType);
         routerSocket->setsockopt(ZMQ_ROUTER_MANDATORY, 1);
-
-        do
-        {
-            routerSocket->bind(p_socketAddr.data());
-        } while (!(routerSocket->connected()));
-
-        isReady = true;
 
     }
 
@@ -110,6 +94,10 @@ namespace reactor {
     }
 
     void EventService::start() {
+        do {
+            routerSocket->bind(socketAddress);
+        } while (!(routerSocket->connected()));
+
         thread_object = std::thread (&EventService::run, this);
     }
 

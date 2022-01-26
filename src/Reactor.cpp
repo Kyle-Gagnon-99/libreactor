@@ -35,20 +35,13 @@ namespace reactor {
          * End of creating a ReactorId object
          */
 
-        socketType = zmq::socket_type::dealer;
-        dealerSocket = new zmq::socket_t(context, socketType);
+        dealerSocket = new zmq::socket_t(context, dealerSocketType);
 
         dealerSocket->setsockopt(ZMQ_ROUTING_ID, (void *)reactorIdArray, structSize);
-        
-        try {
-            dealerSocket->connect(socketAddress);
-        } catch(const zmq::error_t error) {
-            spdlog::error("{}", error.what());
-        }
 
     }
 
-    Reactor::Reactor(int p_rid, std::string p_socketAddr) : rid(p_rid) {
+    Reactor::Reactor(int p_rid, std::string p_socketAddress) : rid(p_rid), socketAddress(p_socketAddress) {
 
         /**
          * @brief Constructor to include a custom address for the socket
@@ -75,17 +68,9 @@ namespace reactor {
         /*
          * End of creating a ReactorId object
          */
-
-        socketType = zmq::socket_type::dealer;
-        dealerSocket = new zmq::socket_t(context, socketType);
+        dealerSocket = new zmq::socket_t(context, dealerSocketType);
 
         dealerSocket->setsockopt(ZMQ_ROUTING_ID, (void *)reactorIdArray, structSize);
-
-        try {
-            dealerSocket->connect(p_socketAddr);
-        } catch(const zmq::error_t error) {
-            spdlog::error("{}", error.what());
-        }
 
     }
 
@@ -142,6 +127,13 @@ namespace reactor {
     }
 
     void Reactor::start() {
+
+        try {
+            dealerSocket->connect(socketAddress);
+        } catch(const zmq::error_t error) {
+            spdlog::error("{}", error.what());
+        }
+
         thread_object = std::thread(&Reactor::run, this);
     }
 
