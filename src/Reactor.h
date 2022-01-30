@@ -26,7 +26,7 @@ namespace reactor {
              * This is how this reactor identifies itself. This integer should
              * be available to others to know how to pass messages to it.
              */
-            int rid;
+            int reactorId;
 
             /**
              * @brief Construct a new Reactor object.
@@ -52,14 +52,13 @@ namespace reactor {
 
             /**
              * @brief Send a message to a reactor.
-             * Sends a string to the reactor. The string could be a normal string
-             * or a protocol buffer object to be able to send an actual object
-             * to a reactor.
+             * Sends a character pointer to the reactor and the size of the
+             * object you would like to send
              * 
              * @param p_destReactorId The reactor id to send to
              * @param p_message The message to send to the reactor
              */
-            void sendMessage(int p_destReactorId, std::string p_message);
+            void sendMessage(int p_destReactorId, const std::string& p_message);
 
             /**
              * @brief Start the Reactor by connecting the socket to the address and
