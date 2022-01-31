@@ -1,10 +1,17 @@
 #ifndef __REACTOR_H__
 #define __REACTOR_H__
 
-#include <zmq.hpp>
 #include <string>
 #include <thread>
-#include "EventService.h"
+
+/**
+ * @brief Forward declare library
+ * 
+ */
+namespace zmq {
+    class context_t;
+    class socket_t;
+}
 
 namespace reactor {
     /**
@@ -16,11 +23,6 @@ namespace reactor {
     class Reactor {
 
         public:
-            /**
-             * @brief A dealer socket type to identify the socket and its properties.
-             */
-            zmq::socket_type dealerSocketType = zmq::socket_type::dealer;
-
             /**
              * @brief The reactor id.
              * This is how this reactor identifies itself. This integer should
@@ -71,17 +73,32 @@ namespace reactor {
              * @brief The thread object.
              */
             std::thread thread_object;
+
+            /**
+             * @brief Resends a message back to a given reactor with the number of attempts
+             * to keep track how many times the reactor has attempted to send a message. The
+             * number of attempts should be passed from the processFailMessage function only.
+             * The number of attempts is to help not overflow any queues and not overload
+             * the network traffic.
+             * 
+             * @param p_destRid The ID of the reactor to send the message to
+             * @param p_numOfAttempts The number of attempts this mesage has been sent but failed to deliver
+             * @param p_message The message itself
+             */
+            void resendMessage(int p_destRid, int p_numOfAttempts, std::string p_message);
         
         private:
-            /**
-             * @brief The zmq context.
-             */
-            zmq::context_t context;
 
             /**
              * @brief The dealer socket.
              */
             zmq::socket_t* dealerSocket;
+
+            /**
+             * @brief The ZMQ context
+             * 
+             */
+            zmq::context_t* context;
 
             /**
              * @brief A boolean to see if the class should keep going or shut down.
@@ -108,13 +125,20 @@ namespace reactor {
              * @brief How to this reactor will consume the message.
              * Defines on how the current reactor will consume the messages coming in. This is
              * where the real power comes from.
+             * 
+             * @param p_message The message that was sent
              */
-            virtual void consumeMsg(std::string) = 0;
+            virtual void consumeMessage(std::string p_message) = 0;
 
             /**
              * @brief Process the fail message. Up to the user on what to do with the message.
+             * 
+             * @param p_destRid The ID of the reactor where the message was supposed to go
+             * @param p_failMsgStr The FAIL_TO_DELIVER string
+             * @param p_message The message that was supposed to send
+             * @param p_numOfAttempts The number of attempts that the message has tried to send to the reactor
              */
-            virtual void processFailMsg(std::string, int) = 0;
+            virtual void processFailMessage(int p_destRid, std::string p_failMsgStr, std::string p_message, int p_numOfAttempts) = 0;
 
     };
 }

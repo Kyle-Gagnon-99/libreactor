@@ -7,6 +7,7 @@ OUTPUT		:= libreactor.so
 CPP_SRC += $(SRC)/EventService.cpp
 CPP_SRC += $(SRC)/Reactor.cpp
 CPP_SRC += $(SRC)/ReactorId.cpp
+CPP_SRC += $(SRC)/MsgAttempts.cpp
 
 # Compile OBJ files (.o) to a build directory
 CPP_OBJ		:= $(addprefix $(BLD_DIR), $(subst $(PRJ_DIR), ,$(CPP_SRC:.cpp=.o)))
@@ -16,6 +17,7 @@ CPP_H		+= $(SRC)/EventService.h
 CPP_H		+= $(SRC)/Reactor.h
 CPP_H		+= $(SRC)/event_message_types.h
 CPP_H		+= $(SRC)/ReactorId.h
+CPP_H		+= $(SRC)/MsgAttempts.h
 
 # Directories on where to include header files
 INC_DIR		+= $(SRC)
@@ -38,7 +40,7 @@ LIBS		+= protobuf
 
 # Defines
 #DEFINES 	+= DEBUG_OUTPUT
-DEFINES		+= ENABLE_ROUTER_ERROR
+#DEFINES		+= ENABLE_ROUTER_ERROR
 
 # Where to install the library to. Can be overriden
 INSTALL_SO_DIR	?= /usr/local/lib

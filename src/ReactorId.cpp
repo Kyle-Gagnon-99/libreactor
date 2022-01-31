@@ -19,7 +19,7 @@ PROTOBUF_PRAGMA_INIT_SEG
 namespace reactor {
 constexpr ReactorId::ReactorId(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : rid_(int64_t{0}){}
+  : reactorid_(int64_t{0}){}
 struct ReactorIdDefaultTypeInternal {
   constexpr ReactorIdDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -41,7 +41,7 @@ const uint32_t TableStruct_ReactorId_2eproto::offsets[] PROTOBUF_SECTION_VARIABL
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::reactor::ReactorId, rid_),
+  PROTOBUF_FIELD_OFFSET(::reactor::ReactorId, reactorid_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::reactor::ReactorId)},
@@ -52,12 +52,12 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 };
 
 const char descriptor_table_protodef_ReactorId_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\017ReactorId.proto\022\007reactor\"\030\n\tReactorId\022"
-  "\013\n\003rid\030\001 \001(\003b\006proto3"
+  "\n\017ReactorId.proto\022\007reactor\"\036\n\tReactorId\022"
+  "\021\n\treactorId\030\001 \001(\003b\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_ReactorId_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_ReactorId_2eproto = {
-  false, false, 60, descriptor_table_protodef_ReactorId_2eproto, "ReactorId.proto", 
+  false, false, 66, descriptor_table_protodef_ReactorId_2eproto, "ReactorId.proto", 
   &descriptor_table_ReactorId_2eproto_once, nullptr, 0, 1,
   schemas, file_default_instances, TableStruct_ReactorId_2eproto::offsets,
   file_level_metadata_ReactorId_2eproto, file_level_enum_descriptors_ReactorId_2eproto, file_level_service_descriptors_ReactorId_2eproto,
@@ -88,12 +88,12 @@ ReactorId::ReactorId(::PROTOBUF_NAMESPACE_ID::Arena* arena,
 ReactorId::ReactorId(const ReactorId& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  rid_ = from.rid_;
+  reactorid_ = from.reactorid_;
   // @@protoc_insertion_point(copy_constructor:reactor.ReactorId)
 }
 
 inline void ReactorId::SharedCtor() {
-rid_ = int64_t{0};
+reactorid_ = int64_t{0};
 }
 
 ReactorId::~ReactorId() {
@@ -123,7 +123,7 @@ void ReactorId::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  rid_ = int64_t{0};
+  reactorid_ = int64_t{0};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -133,10 +133,10 @@ const char* ReactorId::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::
     uint32_t tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // int64 rid = 1;
+      // int64 reactorId = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          rid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          reactorid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -170,10 +170,10 @@ uint8_t* ReactorId::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // int64 rid = 1;
-  if (this->_internal_rid() != 0) {
+  // int64 reactorId = 1;
+  if (this->_internal_reactorid() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt64ToArray(1, this->_internal_rid(), target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt64ToArray(1, this->_internal_reactorid(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -192,9 +192,9 @@ size_t ReactorId::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // int64 rid = 1;
-  if (this->_internal_rid() != 0) {
-    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int64SizePlusOne(this->_internal_rid());
+  // int64 reactorId = 1;
+  if (this->_internal_reactorid() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int64SizePlusOne(this->_internal_reactorid());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
@@ -219,8 +219,8 @@ void ReactorId::MergeFrom(const ReactorId& from) {
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from._internal_rid() != 0) {
-    _internal_set_rid(from._internal_rid());
+  if (from._internal_reactorid() != 0) {
+    _internal_set_reactorid(from._internal_reactorid());
   }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -239,7 +239,7 @@ bool ReactorId::IsInitialized() const {
 void ReactorId::InternalSwap(ReactorId* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  swap(rid_, other->rid_);
+  swap(reactorid_, other->reactorid_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata ReactorId::GetMetadata() const {

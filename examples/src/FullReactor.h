@@ -19,7 +19,7 @@ class FullReactor : public reactor::Reactor {
          */
         FullReactor(int p_rid);
         /**
-         * @brief Destroy the Full Reactor object
+         * @brief Connect to an endpoint with a specificed ID
          * 
          */
         FullReactor(int p_rid, std::string p_conEndPoint);
@@ -29,7 +29,7 @@ class FullReactor : public reactor::Reactor {
          * 
          * @param p_msg The message to consume
          */
-        void consumeMsg(std::string p_msg);
+        void consumeMessage(std::string p_msg);
 
         /**
          * @brief Implements virtual function. Processes fail message from router. In this case do nothing
@@ -37,7 +37,7 @@ class FullReactor : public reactor::Reactor {
          * @param p_failMsgStr The failed message type
          * @param p_dest Where the message was supposed to go
          */
-        void processFailMsg(std::string p_failMsgStr, int p_dest);
+        void processFailMessage(int p_destRid, std::string p_failMsgStr, std::string p_message, int p_numOfAttempts);
 
 };
 #endif // __FULLREACTOR_H__

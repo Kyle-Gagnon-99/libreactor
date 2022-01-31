@@ -6,7 +6,11 @@
 #include <thread>
 #include <string>
 
-//#include "zmq.hpp"
+namespace zmq {
+    class context_t;
+    class socket_t;
+    class message_t;
+}
 
 /**
  * @author Kyle Gagnon
@@ -22,11 +26,6 @@ namespace reactor {
     class EventService {
 
         public:
-            /**
-             * @brief The type of socket for this class
-             */
-            zmq::socket_type routerSocketType = zmq::socket_type::router;
-
             /**
              * @brief Construct a new Event Service object.
              * 
@@ -54,14 +53,15 @@ namespace reactor {
 
         private:
             /**
-             * @brief The ZMQ context.
-             */
-            zmq::context_t context;
-
-            /**
              * @brief The actual router socket.
              */
             zmq::socket_t* routerSocket;
+
+            /**
+             * @brief The ZMQ context
+             * 
+             */
+            zmq::context_t* context;
 
             /**
              * @brief The thread object.
@@ -72,6 +72,12 @@ namespace reactor {
              * @brief The default address the router socket will bind to.
              */
             std::string socketAddress = "tcp://127.0.0.1:5555";
+
+            /**
+             * @brief Starts and stops the thread
+             * 
+             */
+            bool isRunning = true;
 
             /**
              * @brief The actual actions that happens when the thread starts.
@@ -91,8 +97,10 @@ namespace reactor {
              * 
              * @param p_sourceMsg The source of where it came from
              * @param p_destMsg The destination of where it was sending to
+             * @param p_numOfAttempts The number of attempts the message has tried to send
+             * @param p_message The actual message itself
              */
-            void sendFailMsg(zmq::message_t* p_sourceMsg, zmq::message_t* p_destMsg);
+            void sendFailMsg(zmq::message_t* p_sourceMsg, zmq::message_t* p_destMsg, zmq::message_t* p_numOfAttempts, zmq::message_t* p_message);
     };
 }
 
