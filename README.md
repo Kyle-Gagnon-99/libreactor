@@ -6,7 +6,16 @@ CPPZMQ - https://github.com/zeromq/cppzmq (Based off of ZeroMQ)
 Google Protocol Buffers (protobuf/protoc) - https://github.com/protocolbuffers/protobuf
 
 # Installation
-Installing the library normal requires sudo unless you would like to install the .so and header files to a different location. First
+**NOTE**: This was compiled, tested, and ran on Ubuntu <version>. There could be a possibilty for cross compiling in the future but for now there is not.
+  
+You can install the library in one of two ways! My favorite, you can download the .so and header files from the release and you can move the .so and header files where you would like to, or you can build the library from the source code.
+
+## Downloading the release
+To download the release, find the release you would like and download it to your machine. From there you can paste the .so file where you would normally link libraries and put the header files where your compiler will search for.
+  
+## Installing from source
+
+Installing the library requires external libraries to be installed on your machine.
 
 ```$ git clone git@github.com:Kyle-Gagnon-99/libreactor.git```
 
