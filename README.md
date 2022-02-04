@@ -6,7 +6,7 @@ CPPZMQ - https://github.com/zeromq/cppzmq (Based off of ZeroMQ)
 Google Protocol Buffers (protobuf/protoc) - https://github.com/protocolbuffers/protobuf
 
 # Installation
-**NOTE**: This was compiled, tested, and ran on Ubuntu <version>. There could be a possibilty for cross compiling in the future but for now there is not.
+**NOTE**: This was compiled, tested, and ran on Ubuntu 20.04. There could be a possibilty for cross compiling in the future but for now there is not.
   
 To install the library download the release, clone the repo, copy the .so file to the repo and run one command. That's it!
 
