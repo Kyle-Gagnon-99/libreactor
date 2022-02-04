@@ -16,7 +16,7 @@ To download the release as is, first, clone the repo to your machine.
   ```$ git clone git@github.com:Kyle-Gagnon-99/libreactor.git```
 (This is assuming you are using ssh. If you are not use the HTTPS link to the repo)
   
-After you clone the repo to your machine, download the relase and unzip the folder. In the folder you will find a .so (shared object) file in the release. Copy the .so file to be inside the repository. (<Clone Location>/libreactor/). Then move to inside the repository file and run the following command.
+After you clone the repo to your machine, download the relase and unzip the folder. In the folder you will find a .so (shared object) file in the release. Copy the .so file to be inside the repository. (Clone Location/libreactor/). Then move to inside the repository file and run the following command.
   
 ```$ sudo make full-installation```
   
