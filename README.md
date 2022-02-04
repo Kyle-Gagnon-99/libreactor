@@ -11,7 +11,7 @@ Google Protocol Buffers (protobuf/protoc) - https://github.com/protocolbuffers/p
 To install the library download the release, clone the repo, copy the .so file to the repo and run one command. That's it!
 
 ## Downloading the release
-To download the release as is first, clone the repo to your machine.
+To download the release as is, first, clone the repo to your machine.
   
   ```$ git clone git@github.com:Kyle-Gagnon-99/libreactor.git```
 (This is assuming you are using ssh. If you are not use the HTTPS link to the repo)
